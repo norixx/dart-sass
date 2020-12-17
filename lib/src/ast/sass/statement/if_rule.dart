@@ -49,6 +49,8 @@ class IfRule implements Statement {
   }
 }
 
+// TODO: generic nullability
+
 /// A single clause in an `@if` rule.
 class IfClause {
   /// The expression to evaluate to determine whether to run this rule, or
@@ -61,10 +63,10 @@ class IfClause {
   /// Whether any of [children] is a variable, function, or mixin declaration.
   final bool hasDeclarations;
 
-  IfClause(Expression expression, Iterable<Statement> children)
+  IfClause(Expression expression, Iterable<Statement/*!*/> children)
       : this._(expression, List.unmodifiable(children));
 
-  IfClause.last(Iterable<Statement> children)
+  IfClause.last(Iterable<Statement/*!*/> children)
       : this._(null, List.unmodifiable(children));
 
   IfClause._(this.expression, this.children)

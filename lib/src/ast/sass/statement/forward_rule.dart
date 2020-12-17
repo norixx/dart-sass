@@ -112,6 +112,8 @@ class ForwardRule implements Statement {
     var buffer =
         StringBuffer("@forward ${StringExpression.quoteText(url.toString())}");
 
+    var shownMixinsAndFunctions = this.shownMixinsAndFunctions;
+    var hiddenMixinsAndFunctions = this.hiddenMixinsAndFunctions;
     if (shownMixinsAndFunctions != null) {
       buffer
         ..write(" show ")
@@ -137,8 +139,8 @@ class ForwardRule implements Statement {
   String _memberList(
           Iterable<String> mixinsAndFunctions, Iterable<String> variables) =>
       [
-        if (shownMixinsAndFunctions != null) ...shownMixinsAndFunctions,
-        if (shownVariables != null)
-          for (var name in shownVariables) "\$$name"
+        ...mixinsAndFunctions,
+        // TODO: no as
+        for (var name in variables ?? const []) "\$$name"
       ].join(", ");
 }

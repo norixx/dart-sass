@@ -17,17 +17,17 @@ class ForRule extends ParentStatement {
   final String variable;
 
   /// The expression for the start index.
-  final Expression from;
+  final Expression/*!*/ from;
 
   /// The expression for the end index.
-  final Expression to;
+  final Expression/*!*/ to;
 
   /// Whether [to] is exclusive.
-  final bool isExclusive;
+  final bool/*!*/ isExclusive;
 
   final FileSpan span;
 
-  ForRule(this.variable, this.from, this.to, Iterable<Statement> children,
+  ForRule(this.variable, this.from, this.to, Iterable<Statement/*!*/> children,
       this.span,
       {bool exclusive = true})
       : isExclusive = exclusive,

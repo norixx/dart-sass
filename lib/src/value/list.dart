@@ -32,7 +32,7 @@ class SassList extends Value implements ext.SassList {
         separator = separator ?? ListSeparator.undecided,
         hasBrackets = brackets;
 
-  SassList(Iterable<Value> contents, this.separator, {bool brackets = false})
+  SassList(Iterable<Value/*!*/> contents, this.separator, {bool brackets = false})
       : _contents = List.unmodifiable(contents),
         hasBrackets = brackets {
     if (separator == ListSeparator.undecided && asList.length > 1) {
@@ -79,7 +79,7 @@ class ListSeparator {
   ///
   /// If the separator of a list has not been decided, this value will be
   /// `null`.
-  final String separator;
+  final String/*!*/ separator;
 
   const ListSeparator._(this._name, this.separator);
 

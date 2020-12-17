@@ -37,7 +37,7 @@ class Stylesheet extends ParentStatement {
   List<ForwardRule> get forwards => UnmodifiableListView(_forwards);
   final _forwards = <ForwardRule>[];
 
-  Stylesheet(Iterable<Statement> children, this.span, {this.plainCss = false})
+  Stylesheet(Iterable<Statement/*!*/> children, this.span, {this.plainCss = false})
       : super(List.unmodifiable(children)) {
     for (var child in this.children) {
       if (child is UseRule) {

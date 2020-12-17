@@ -15,11 +15,11 @@ import 'parent.dart';
 /// `true`.
 class WhileRule extends ParentStatement {
   /// The condition that determines whether the block will be executed.
-  final Expression condition;
+  final Expression/*!*/ condition;
 
   final FileSpan span;
 
-  WhileRule(this.condition, Iterable<Statement> children, this.span)
+  WhileRule(this.condition, Iterable<Statement/*!*/> children, this.span)
       : super(List.unmodifiable(children));
 
   T accept<T>(StatementVisitor<T> visitor) => visitor.visitWhileRule(this);

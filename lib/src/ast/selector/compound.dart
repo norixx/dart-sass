@@ -19,11 +19,13 @@ class CompoundSelector extends Selector implements ComplexSelectorComponent {
   /// This is never empty.
   final List<SimpleSelector> components;
 
+  // TODO: late for specificities
+
   /// The minimum possible specificity that this selector can have.
   ///
   /// Pseudo selectors that contain selectors, like `:not()` and `:matches()`,
   /// can have a range of possible specificities.
-  int get minSpecificity {
+  int/*!*/ get minSpecificity {
     if (_minSpecificity == null) _computeSpecificity();
     return _minSpecificity;
   }
@@ -34,7 +36,7 @@ class CompoundSelector extends Selector implements ComplexSelectorComponent {
   ///
   /// Pseudo selectors that contain selectors, like `:not()` and `:matches()`,
   /// can have a range of possible specificities.
-  int get maxSpecificity {
+  int/*!*/ get maxSpecificity {
     if (_maxSpecificity == null) _computeSpecificity();
     return _maxSpecificity;
   }
@@ -70,7 +72,7 @@ class CompoundSelector extends Selector implements ComplexSelectorComponent {
   ///
   /// That is, whether this matches every element that [other] matches, as well
   /// as possibly additional elements.
-  bool isSuperselector(CompoundSelector other) =>
+  bool isSuperselector(CompoundSelector/*!*/ other) =>
       compoundIsSuperselector(this, other);
 
   /// Computes [_minSpecificity] and [_maxSpecificity].

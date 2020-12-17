@@ -25,7 +25,7 @@ abstract class SassNumber extends Value {
   /// [double] even if [this] represents an int from Sass's perspective. Use
   /// [isInt] to determine whether this is an integer, [asInt] to get its
   /// integer value, or [assertInt] to do both at once.
-  num get value;
+  num/*!*/ get value;
 
   /// This number's numerator units.
   List<String> get numeratorUnits;
@@ -111,5 +111,5 @@ abstract class SassNumber extends Value {
   ///
   /// Throws a [SassScriptException] if this number's units aren't compatible
   /// with [newNumerators] and [newDenominators].
-  num valueInUnits(List<String> newNumerators, List<String> newDenominators);
+  num/*!*//*!*/ valueInUnits(List<String> newNumerators, List<String> newDenominators);
 }

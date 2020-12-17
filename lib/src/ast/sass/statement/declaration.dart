@@ -17,7 +17,7 @@ class Declaration extends ParentStatement {
   final Interpolation name;
 
   /// The value of this declaration.
-  final Expression value;
+  final Expression/*?*/ value;
 
   final FileSpan span;
 
@@ -30,7 +30,7 @@ class Declaration extends ParentStatement {
   /// If this is `true`, then `value` will be a [StringExpression].
   bool get isCustomProperty => name.initialPlain.startsWith('--');
 
-  Declaration(this.name, this.span, {this.value, Iterable<Statement> children})
+  Declaration(this.name, this.span, {this.value, Iterable<Statement/*!*/> children})
       : super(
             children = children == null ? null : List.unmodifiable(children)) {
     if (isCustomProperty && value is! StringExpression) {

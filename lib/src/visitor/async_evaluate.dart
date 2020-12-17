@@ -37,7 +37,6 @@ import '../module.dart';
 import '../module/built_in.dart';
 import '../parse/keyframe_selector.dart';
 import '../syntax.dart';
-import '../util/fixed_length_list_builder.dart';
 import '../utils.dart';
 import '../value.dart';
 import '../warn.dart';
@@ -704,12 +703,11 @@ class _EvaluateVisitor
   List<ModifiableCssNode> _addOutOfOrderImports() {
     if (_outOfOrderImports == null) return _root.children;
 
-    var statements = FixedLengthListBuilder<ModifiableCssNode>(
-        _root.children.length + _outOfOrderImports.length)
-      ..addRange(_root.children, 0, _endOfImports)
-      ..addAll(_outOfOrderImports)
-      ..addRange(_root.children, _endOfImports);
-    return statements.build();
+    return [
+      ..._root.children.take(_endOfImports),
+      ..._outOfOrderImports,
+      ..._root.children.skip(_endOfImports)
+    ];
   }
 
   /// Returns a new stylesheet containing [root]'s CSS as well as the CSS of all

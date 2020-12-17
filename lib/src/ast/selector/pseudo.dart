@@ -59,6 +59,8 @@ class PseudoSelector extends SimpleSelector {
   /// both non-`null`, the selector follows the argument.
   final SelectorList selector;
 
+  // TODO: late
+
   int get minSpecificity {
     if (_minSpecificity == null) _computeSpecificity();
     return _minSpecificity;
@@ -74,6 +76,7 @@ class PseudoSelector extends SimpleSelector {
   int _maxSpecificity;
 
   bool get isInvisible {
+    var selector = this.selector;
     if (selector == null) return false;
 
     // We don't consider `:not(%foo)` to be invisible because, semantically, it
@@ -158,6 +161,7 @@ class PseudoSelector extends SimpleSelector {
       return;
     }
 
+    var selector = this.selector;
     if (selector == null) {
       _minSpecificity = super.minSpecificity;
       _maxSpecificity = super.maxSpecificity;

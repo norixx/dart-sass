@@ -225,7 +225,7 @@ class Parser {
     var quote = scanner.readChar();
     if (quote != $single_quote && quote != $double_quote) {
       scanner.error("Expected string.",
-          position: quote == null ? scanner.position : scanner.position - 1);
+          position: scanner.position - 1);
     }
 
     var buffer = StringBuffer();
@@ -284,6 +284,7 @@ class Parser {
     var wroteNewline = false;
     loop:
     while (true) {
+      // TODO: no next!
       var next = scanner.peekChar();
       switch (next) {
         case $backslash:
@@ -445,7 +446,6 @@ class Parser {
       return "";
     } else if (isNewline(first)) {
       scanner.error("Expected escape sequence.");
-      return null;
     } else if (isHex(first)) {
       for (var i = 0; i < 6; i++) {
         var next = scanner.peekChar();
@@ -465,7 +465,6 @@ class Parser {
       } on RangeError {
         scanner.error("Invalid Unicode code point.",
             position: start, length: scanner.position - start);
-        return '';
       }
     } else if (value <= 0x1F ||
         value == 0x7F ||
@@ -491,7 +490,6 @@ class Parser {
       return 0xFFFD;
     } else if (isNewline(first)) {
       scanner.error("Expected escape sequence.");
-      return 0;
     } else if (isHex(first)) {
       var value = 0;
       for (var i = 0; i < 6; i++) {
@@ -699,7 +697,7 @@ class Parser {
     try {
       return callback();
     } on SourceSpanFormatException catch (error) {
-      var span = error.span as FileSpan;
+      var span = error.span as FileSpan/*!*/;
       if (startsWithIgnoreCase(error.message, "expected") && span.length == 0) {
         var startPosition = _firstNewlineBefore(span.start.offset);
         if (startPosition != span.start.offset) {

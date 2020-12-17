@@ -5,7 +5,7 @@
 // DO NOT EDIT. This file was generated from async_import_cache.dart.
 // See tool/grind/synchronize.dart for details.
 //
-// Checksum: ac91c195e290010a7e104f832a00a5ebb41a127a
+// Checksum: 9fc5f1641a579c8e83f43bec6284689c25c9139e
 //
 // ignore_for_file: unused_import
 
@@ -20,7 +20,7 @@ import 'importer/utils.dart';
 import 'io.dart';
 import 'logger.dart';
 import 'sync_package_resolver.dart';
-import 'utils.dart'; // ignore: unused_import
+import 'utils.dart';
 
 /// An in-memory cache of parsed stylesheets that have been imported by Sass.
 class ImportCache {

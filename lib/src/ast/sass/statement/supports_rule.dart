@@ -16,7 +16,7 @@ class SupportsRule extends ParentStatement {
 
   final FileSpan span;
 
-  SupportsRule(this.condition, Iterable<Statement> children, this.span)
+  SupportsRule(this.condition, Iterable<Statement/*!*/> children, this.span)
       : super(List.unmodifiable(children));
 
   T accept<T>(StatementVisitor<T> visitor) => visitor.visitSupportsRule(this);

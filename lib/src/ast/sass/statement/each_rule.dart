@@ -17,11 +17,11 @@ class EachRule extends ParentStatement {
   final List<String> variables;
 
   /// The expression whose value this iterates through.
-  final Expression list;
+  final Expression/*!*/ list;
 
   final FileSpan span;
 
-  EachRule(Iterable<String> variables, this.list, Iterable<Statement> children,
+  EachRule(Iterable<String> variables, this.list, Iterable<Statement/*!*/> children,
       this.span)
       : variables = List.unmodifiable(variables),
         super(List.unmodifiable(children));

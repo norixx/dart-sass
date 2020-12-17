@@ -13,6 +13,8 @@ import '../visitor/interface/value.dart';
 import 'external/value.dart' as ext;
 
 class SassColor extends Value implements ext.SassColor {
+  // TODO: lates all around
+
   int get red {
     if (_red == null) _hslToRgb();
     return _red;
@@ -146,7 +148,7 @@ class SassColor extends Value implements ext.SassColor {
   SassColor changeAlpha(num alpha) => SassColor._(_red, _green, _blue, _hue,
       _saturation, _lightness, fuzzyAssertRange(alpha, 0, 1, "alpha"));
 
-  Value plus(Value other) {
+  Value plus(Value/*!*/ other) {
     if (other is! SassNumber && other is! SassColor) return super.plus(other);
     throw SassScriptException('Undefined operation "$this + $other".');
   }
@@ -163,7 +165,7 @@ class SassColor extends Value implements ext.SassColor {
     throw SassScriptException('Undefined operation "$this / $other".');
   }
 
-  Value modulo(Value other) =>
+  Value modulo(Value/*!*/ other) =>
       throw SassScriptException('Undefined operation "$this % $other".');
 
   bool operator ==(Object other) =>
@@ -198,11 +200,11 @@ class SassColor extends Value implements ext.SassColor {
       _hue = (240 + 60 * (scaledRed - scaledGreen) / delta) % 360;
     }
 
-    _lightness = 50 * (max + min);
+    var lightness = _lightness = 50 * (max + min);
 
     if (max == min) {
       _saturation = 0;
-    } else if (_lightness < 50) {
+    } else if (lightness < 50) {
       _saturation = 100 * delta / (max + min);
     } else {
       _saturation = 100 * delta / (2 - max - min);

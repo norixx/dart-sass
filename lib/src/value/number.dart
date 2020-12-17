@@ -252,6 +252,7 @@ class SassNumber extends Value implements ext.SassNumber {
         throw SassScriptException("Incompatible units "
             "${_unitString(numeratorUnits, denominatorUnits)} and "
             "${_unitString(newNumerators, newDenominators)}.");
+        // TODO: no as
       });
     }
 
@@ -266,6 +267,7 @@ class SassNumber extends Value implements ext.SassNumber {
         throw SassScriptException("Incompatible units "
             "${_unitString(numeratorUnits, denominatorUnits)} and "
             "${_unitString(newNumerators, newDenominators)}.");
+        // TODO: no as
       });
     }
 
@@ -292,35 +294,35 @@ class SassNumber extends Value implements ext.SassNumber {
     }
   }
 
-  SassBoolean greaterThan(Value other) {
+  SassBoolean greaterThan(Value/*!*/ other) {
     if (other is SassNumber) {
       return SassBoolean(_coerceUnits(other, fuzzyGreaterThan));
     }
     throw SassScriptException('Undefined operation "$this > $other".');
   }
 
-  SassBoolean greaterThanOrEquals(Value other) {
+  SassBoolean greaterThanOrEquals(Value/*!*/ other) {
     if (other is SassNumber) {
       return SassBoolean(_coerceUnits(other, fuzzyGreaterThanOrEquals));
     }
     throw SassScriptException('Undefined operation "$this >= $other".');
   }
 
-  SassBoolean lessThan(Value other) {
+  SassBoolean lessThan(Value/*!*/ other) {
     if (other is SassNumber) {
       return SassBoolean(_coerceUnits(other, fuzzyLessThan));
     }
     throw SassScriptException('Undefined operation "$this < $other".');
   }
 
-  SassBoolean lessThanOrEquals(Value other) {
+  SassBoolean lessThanOrEquals(Value/*!*/ other) {
     if (other is SassNumber) {
       return SassBoolean(_coerceUnits(other, fuzzyLessThanOrEquals));
     }
     throw SassScriptException('Undefined operation "$this <= $other".');
   }
 
-  Value modulo(Value other) {
+  Value modulo(Value/*!*/ other) {
     if (other is SassNumber) {
       return _coerceNumber(other, (num1, num2) {
         if (num2 > 0) return num1 % num2;
@@ -335,7 +337,7 @@ class SassNumber extends Value implements ext.SassNumber {
     throw SassScriptException('Undefined operation "$this % $other".');
   }
 
-  Value plus(Value other) {
+  Value plus(Value/*!*/ other) {
     if (other is SassNumber) {
       return _coerceNumber(other, (num1, num2) => num1 + num2);
     }
@@ -351,7 +353,7 @@ class SassNumber extends Value implements ext.SassNumber {
     throw SassScriptException('Undefined operation "$this - $other".');
   }
 
-  Value times(Value other) {
+  Value times(Value/*!*/ other) {
     if (other is SassNumber) {
       return _multiplyUnits(value * other.value, numeratorUnits,
           denominatorUnits, other.numeratorUnits, other.denominatorUnits);
@@ -468,19 +470,16 @@ class SassNumber extends Value implements ext.SassNumber {
   /// unit in [units2].
   bool _areAnyConvertible(List<String> units1, List<String> units2) {
     return units1.any((unit1) {
-      if (!_isConvertable(unit1)) return units2.contains(unit1);
       var innerMap = _conversions[unit1];
+      if (innerMap == null) return units2.contains(unit1);
       return units2.any(innerMap.containsKey);
     });
   }
 
-  /// Returns whether [unit] can be converted to or from any other units.
-  bool _isConvertable(String unit) => _conversions.containsKey(unit);
-
   /// Returns the number of [unit1]s per [unit2].
   ///
   /// Equivalently, `1unit1 * _conversionFactor(unit1, unit2) = 1unit2`.
-  num _conversionFactor(String unit1, String unit2) {
+  num _conversionFactor(String unit1, String/*!*/ unit2) {
     if (unit1 == unit2) return 1;
     var innerMap = _conversions[unit1];
     if (innerMap == null) return null;

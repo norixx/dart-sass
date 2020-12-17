@@ -18,7 +18,7 @@ class MediaRule extends ParentStatement {
 
   final FileSpan span;
 
-  MediaRule(this.query, Iterable<Statement> children, this.span)
+  MediaRule(this.query, Iterable<Statement/*!*/> children, this.span)
       : super(List.unmodifiable(children));
 
   T accept<T>(StatementVisitor<T> visitor) => visitor.visitMediaRule(this);

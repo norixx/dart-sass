@@ -27,11 +27,13 @@ class ComplexSelector extends Selector {
   /// Whether a line break should be emitted *before* this selector.
   final bool lineBreak;
 
+  // TODO: late for all three
+
   /// The minimum possible specificity that this selector can have.
   ///
   /// Pseudo selectors that contain selectors, like `:not()` and `:matches()`,
   /// can have a range of possible specificities.
-  int get minSpecificity {
+  int/*!*/ get minSpecificity {
     if (_minSpecificity == null) _computeSpecificity();
     return _minSpecificity;
   }
@@ -42,14 +44,14 @@ class ComplexSelector extends Selector {
   ///
   /// Pseudo selectors that contain selectors, like `:not()` and `:matches()`,
   /// can have a range of possible specificities.
-  int get maxSpecificity {
+  int/*!*/ get maxSpecificity {
     if (_maxSpecificity == null) _computeSpecificity();
     return _maxSpecificity;
   }
 
   int _maxSpecificity;
 
-  bool get isInvisible {
+  bool/*!*/ get isInvisible {
     if (_isInvisible != null) return _isInvisible;
     _isInvisible = components.any(
         (component) => component is CompoundSelector && component.isInvisible);
@@ -58,7 +60,7 @@ class ComplexSelector extends Selector {
 
   bool _isInvisible;
 
-  ComplexSelector(Iterable<ComplexSelectorComponent> components,
+  ComplexSelector(Iterable<ComplexSelectorComponent/*!*/> components,
       {this.lineBreak = false})
       : components = List.unmodifiable(components) {
     if (this.components.isEmpty) {

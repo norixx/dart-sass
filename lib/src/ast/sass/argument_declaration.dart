@@ -26,6 +26,7 @@ class ArgumentDeclaration implements SassNode {
   /// Returns [span] expanded to include an identifier immediately before the
   /// declaration, if possible.
   FileSpan get spanWithName {
+    var span = this.span/*!*/;
     var text = span.file.getText(0);
 
     // Move backwards through and whitspace between the name and the arguments.
@@ -86,7 +87,7 @@ class ArgumentDeclaration implements SassNode {
 
   /// Throws a [SassScriptException] if [positional] and [names] aren't valid
   /// for this argument declaration.
-  void verify(int positional, Set<String> names) {
+  void verify(int positional, Set<String/*!*/> names) {
     var namedUsed = 0;
     for (var i = 0; i < arguments.length; i++) {
       var argument = arguments[i];
@@ -144,7 +145,7 @@ class ArgumentDeclaration implements SassNode {
 
   /// Returns whether [positional] and [names] are valid for this argument
   /// declaration.
-  bool matches(int positional, Set<String> names) {
+  bool matches(int positional, Set<String/*!*/> names) {
     var namedUsed = 0;
     for (var i = 0; i < arguments.length; i++) {
       var argument = arguments[i];

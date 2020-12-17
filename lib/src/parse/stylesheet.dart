@@ -112,7 +112,7 @@ abstract class StylesheetParser extends Parser {
         return arguments;
       });
 
-  Expression parseExpression() => _parseSingleProduction(expression);
+  Expression/*!*/ parseExpression() => _parseSingleProduction(expression);
 
   VariableDeclaration parseVariableDeclaration() =>
       _parseSingleProduction(() => lookingAtIdentifier()
@@ -179,7 +179,7 @@ abstract class StylesheetParser extends Parser {
 
       case $rbrace:
         scanner.error('unmatched "}".', length: 1);
-        return null;
+        break;
 
       default:
         return _inStyleRule || _inUnknownAtRule || _inMixin || _inContentBlock
@@ -208,6 +208,7 @@ abstract class StylesheetParser extends Parser {
     start ??= scanner.state;
 
     var name = variableName();
+    // TODO: no start!
     if (namespace != null) _assertPublic(name, () => scanner.spanFrom(start));
 
     if (plainCss) {
@@ -493,6 +494,7 @@ abstract class StylesheetParser extends Parser {
 
       _inStyleRule = wasInStyleRule;
 
+      // TODO: no start!
       return StyleRule(interpolation, children, scanner.spanFrom(start));
     });
   }
@@ -947,6 +949,7 @@ abstract class StylesheetParser extends Parser {
     return _withChildren(child, start, (children, span) {
       _inControlDirective = wasInControlDirective;
 
+      // TODO: no exclusive!
       return ForRule(variable, from, to, children, span, exclusive: exclusive);
     });
   }
@@ -967,9 +970,9 @@ abstract class StylesheetParser extends Parser {
     }
 
     Set<String> shownMixinsAndFunctions;
-    Set<String> shownVariables;
+    Set<String>/*?*/ shownVariables;
     Set<String> hiddenMixinsAndFunctions;
-    Set<String> hiddenVariables;
+    Set<String>/*?*/ hiddenVariables;
     if (scanIdentifier("show")) {
       var members = _memberList();
       shownMixinsAndFunctions = members.item1;
@@ -1384,6 +1387,8 @@ relase. For details, see http://bit.ly/moz-document.
 
   /// Parses the namespace of a `@use` rule from an `as` clause, or returns the
   /// default namespace from its URL.
+  ///
+  /// Returns `null` to indicate a `@use` rule without a URL.
   String _useNamespace(Uri url, LineScannerState start) {
     if (scanIdentifier("as")) {
       whitespace();
@@ -1619,7 +1624,7 @@ relase. For details, see http://bit.ly/moz-document.
   /// still be a valid expression. When it returns `true`, this returns the
   /// expression.
   @protected
-  Expression expression(
+  Expression/*!*/ expression(
       {bool bracketList = false, bool singleEquals = false, bool until()}) {
     if (until != null && until()) scanner.error("Expected expression.");
 
@@ -1638,9 +1643,9 @@ relase. For details, see http://bit.ly/moz-document.
     var start = scanner.state;
     var wasInParentheses = _inParentheses;
 
-    List<Expression> commaExpressions;
+    List<Expression/*!*/> commaExpressions;
 
-    List<Expression> spaceExpressions;
+    List<Expression/*!*/> spaceExpressions;
 
     // Operators whose right-hand operands are not fully parsed yet, in order of
     // appearance in the document. Because a low-precedence operator will cause
@@ -1650,14 +1655,15 @@ relase. For details, see http://bit.ly/moz-document.
 
     // The left-hand sides of [operators]. `operands[n]` is the left-hand side
     // of `operators[n]`.
-    List<Expression> operands;
+    List<Expression/*!*/> operands;
 
     /// Whether the single expression parsed so far may be interpreted as
     /// slash-separated numbers.
     var allowSlash = lookingAtNumber();
 
     /// The leftmost expression that's been fully-parsed. Never `null`.
-    var singleExpression = _singleExpression();
+    // TODO: var
+    Expression/*!*/ singleExpression = _singleExpression();
 
     // Resets the scanner state to the state it was at at the beginning of the
     // expression, except for [_inParentheses].
@@ -1672,6 +1678,11 @@ relase. For details, see http://bit.ly/moz-document.
     }
 
     void resolveOneOperation() {
+      if (operators == null) {
+        throw StateError("operators must be set for resolveOneOperation().");
+      }
+
+      // TODO: no operators!
       var operator = operators.removeLast();
       if (operator != BinaryOperator.dividedBy) allowSlash = false;
       if (allowSlash && !_inParentheses) {
@@ -1685,6 +1696,7 @@ relase. For details, see http://bit.ly/moz-document.
 
     void resolveOperations() {
       if (operators == null) return;
+      // TODO: no !
       while (operators.isNotEmpty) {
         resolveOneOperation();
       }
@@ -1706,6 +1718,7 @@ relase. For details, see http://bit.ly/moz-document.
 
         spaceExpressions ??= [];
         resolveOperations();
+        // TODO: no !s
         spaceExpressions.add(singleExpression);
         allowSlash = number;
       } else if (!number) {
@@ -1745,6 +1758,7 @@ relase. For details, see http://bit.ly/moz-document.
       resolveOperations();
 
       if (spaceExpressions != null) {
+        // TODO: no !s
         spaceExpressions.add(singleExpression);
         singleExpression =
             ListExpression(spaceExpressions, ListSeparator.space);
@@ -1982,6 +1996,7 @@ relase. For details, see http://bit.ly/moz-document.
           if (singleExpression == null) scanner.error("Expected expression.");
 
           resolveSpaceExpressions();
+          // TODO: no !s
           commaExpressions.add(singleExpression);
           scanner.readChar();
           allowSlash = true;
@@ -1998,6 +2013,7 @@ relase. For details, see http://bit.ly/moz-document.
       }
     }
 
+    // TODO: no !s all through here
     if (bracketList) scanner.expectChar($rbracket);
     if (commaExpressions != null) {
       resolveSpaceExpressions();
@@ -2144,7 +2160,7 @@ relase. For details, see http://bit.ly/moz-document.
       default:
         if (first != null && first >= 0x80) return identifierLike();
         scanner.error("Expected expression.");
-        return null;
+        break;
     }
   }
 
@@ -2331,6 +2347,7 @@ relase. For details, see http://bit.ly/moz-document.
   /// Consumes a unary operation expression.
   UnaryOperationExpression _unaryOperation() {
     var start = scanner.state;
+    // TODO: no !
     var operator = _unaryOperatorFor(scanner.readChar());
     if (operator == null) {
       scanner.error("Expected unary operator.", position: scanner.position - 1);
@@ -3002,6 +3019,7 @@ relase. For details, see http://bit.ly/moz-document.
     var wroteNewline = false;
     loop:
     while (true) {
+      // TODO: no next!s
       var next = scanner.peekChar();
       switch (next) {
         case $backslash:
@@ -3272,17 +3290,16 @@ relase. For details, see http://bit.ly/moz-document.
       buffer.add(expression());
     } else {
       var next = scanner.peekChar();
-      var isAngle = next == $langle || next == $rangle;
-      if (isAngle || next == $equal) {
+      if (next == $langle || next == $rangle || next == $equal) {
         buffer.writeCharCode($space);
         buffer.writeCharCode(scanner.readChar());
-        if (isAngle && scanner.scanChar($equal)) buffer.writeCharCode($equal);
+        if ((next == $langle || next == $rangle) && scanner.scanChar($equal)) { buffer.writeCharCode($equal); }
         buffer.writeCharCode($space);
 
         whitespace();
         buffer.add(_expressionUntilComparison());
 
-        if (isAngle && scanner.scanChar(next)) {
+        if ((next == $langle || next == $rangle) && scanner.scanChar(next)) {
           buffer.writeCharCode($space);
           buffer.writeCharCode(next);
           if (scanner.scanChar($equal)) buffer.writeCharCode($equal);

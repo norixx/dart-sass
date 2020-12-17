@@ -9,7 +9,7 @@ import '../callable.dart';
 import '../value.dart';
 import 'async_built_in.dart';
 
-typedef _Callback = Value Function(List<Value> arguments);
+typedef _Callback = Value/*!*/ Function(List<Value/*!*/> arguments);
 
 /// A callable defined in Dart code.
 ///
@@ -32,7 +32,7 @@ class BuiltInCallable implements Callable, AsyncBuiltInCallable {
   /// If passed, [url] is the URL of the module in which the function is
   /// defined.
   BuiltInCallable.function(
-      String name, String arguments, Value callback(List<Value> arguments),
+      String name, String arguments, Value/*!*/ callback(List<Value/*!*/> arguments),
       {Object url})
       : this.parsed(
             name,
@@ -49,19 +49,20 @@ class BuiltInCallable implements Callable, AsyncBuiltInCallable {
   /// If passed, [url] is the URL of the module in which the mixin is
   /// defined.
   BuiltInCallable.mixin(
-      String name, String arguments, void callback(List<Value> arguments),
+      String name, String arguments, void callback(List<Value/*!*/> arguments),
       {Object url})
       : this.parsed(name,
             ArgumentDeclaration.parse('@mixin $name($arguments) {', url: url),
             (arguments) {
           callback(arguments);
-          return null;
+          return sassNull;
         });
 
   /// Creates a callable with a single [arguments] declaration and a single
   /// [callback].
   BuiltInCallable.parsed(this.name, ArgumentDeclaration arguments,
-      Value callback(List<Value> arguments))
+      Value/*!*/ callback(List<Value/*!*/> arguments))
+          // TODO: no as
       : _overloads = [Tuple2(arguments, callback)];
 
   /// Creates a function with multiple implementations.
@@ -93,8 +94,8 @@ class BuiltInCallable implements Callable, AsyncBuiltInCallable {
   /// doesn't guarantee that [positional] and [names] are valid for the returned
   /// [ArgumentDeclaration].
   Tuple2<ArgumentDeclaration, _Callback> callbackFor(
-      int positional, Set<String> names) {
-    Tuple2<ArgumentDeclaration, _Callback> fuzzyMatch;
+      int positional, Set<String/*!*/> names) {
+    Tuple2<ArgumentDeclaration, _Callback>/*!*/ fuzzyMatch;
     int minMismatchDistance;
 
     for (var overload in _overloads) {

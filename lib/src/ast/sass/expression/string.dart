@@ -26,7 +26,7 @@ class StringExpression implements Expression {
 
   /// Returns Sass source for a quoted string that, when evaluated, will have
   /// [text] as its contents.
-  static String quoteText(String text) =>
+  static String/*!*/ quoteText(String text) =>
       StringExpression.plain(text, null, quotes: true)
           .asInterpolation(static: true)
           .asPlain;

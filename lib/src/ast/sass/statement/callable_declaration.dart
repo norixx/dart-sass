@@ -21,12 +21,12 @@ abstract class CallableDeclaration extends ParentStatement {
   final SilentComment comment;
 
   /// The declared arguments this callable accepts.
-  final ArgumentDeclaration arguments;
+  final ArgumentDeclaration/*!*/ arguments;
 
   final FileSpan span;
 
   CallableDeclaration(
-      this.name, this.arguments, Iterable<Statement> children, this.span,
+      this.name, this.arguments, Iterable<Statement/*!*/> children, this.span,
       {SilentComment comment})
       : comment = comment,
         super(List.unmodifiable(children));

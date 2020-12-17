@@ -76,6 +76,7 @@ class SelectorList extends Selector {
       return other.components.expand((complex2) {
         var unified = unifyComplex([complex1.components, complex2.components]);
         if (unified == null) return const <ComplexSelector>[];
+        // TODO: no as
         return unified.map((complex) => ComplexSelector(complex));
       });
     }).toList();
@@ -151,8 +152,7 @@ class SelectorList extends Selector {
           component.components.any((simple) =>
               simple is ParentSelector ||
               (simple is PseudoSelector &&
-                  simple.selector != null &&
-                  simple.selector._containsParentSelector)));
+                  simple.selector?._containsParentSelector ?? false)));
 
   /// Returns a new [CompoundSelector] based on [compound] with all
   /// [ParentSelector]s replaced with [parent].
@@ -162,8 +162,7 @@ class SelectorList extends Selector {
       CompoundSelector compound, SelectorList parent) {
     var containsSelectorPseudo = compound.components.any((simple) =>
         simple is PseudoSelector &&
-        simple.selector != null &&
-        simple.selector._containsParentSelector);
+        simple.selector?._containsParentSelector ?? false);
     if (!containsSelectorPseudo &&
         compound.components.first is! ParentSelector) {
       return null;
@@ -172,9 +171,10 @@ class SelectorList extends Selector {
     var resolvedMembers = containsSelectorPseudo
         ? compound.components.map((simple) {
             if (simple is PseudoSelector) {
-              if (simple.selector == null) return simple;
-              if (!simple.selector._containsParentSelector) return simple;
-              return simple.withSelector(simple.selector
+              var innerSelector = simple.selector;
+              if (innerSelector == null) return simple;
+              if (!innerSelector._containsParentSelector) return simple;
+              return simple.withSelector(innerSelector
                   .resolveParentSelectors(parent, implicitParent: false));
             } else {
               return simple;

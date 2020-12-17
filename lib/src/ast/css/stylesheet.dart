@@ -19,7 +19,7 @@ class CssStylesheet extends CssParentNode {
   bool get isChildless => false;
 
   /// Creates an unmodifiable stylesheet containing [children].
-  CssStylesheet(Iterable<CssNode> children, this.span)
+  CssStylesheet(Iterable<CssNode/*!*/> children, this.span)
       // Use [UnmodifiableListView] rather than [List.unmodifiable] because
       // the underlying nodes are mutable anyway, so it's better to have the
       // whole thing consistently represent mutation of the underlying data.
